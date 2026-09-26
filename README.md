@@ -1,237 +1,536 @@
-# Template for Capstone
-이 레파지토리는 학생들이 캡스톤 프로젝트 결과물을 위한 레파지토리 생성시에 참고할 내용들을 담고 있습니다.
-1. 레파지토리 생성
-2. 레파지토리 구성
-3. 레파지토리 제출 
-4. README.md 가이드라인
-5. README.md 작성팁
+# 몰입형 XR을 위한 상황 인식 기반 Adaptive Passthrough Framework 
+
+# 1. 프로젝트 배경
+
+## 1.1. 국내외 시장 현황 및 문제점
+
+XR(Extended Reality) 기술은 가상현실(VR), 증강현실(AR), 혼합현실(MR)을 포함하는 기술로, 다양한 산업과 일상 환경으로 활용 범위가 확대되고 있다. XR 시장은 2021년 약 190억 달러에서 2026년 약 1,008억 달러 규모로 성장할 것으로 전망되며, 연평균 39.7%의 높은 성장률이 예상된다.
+
+특히 HMD(Head-Mounted Display)를 사용하는 몰입형 VR 환경에서는 사용자가 가상 콘텐츠에 집중하는 동안 실제 주변 환경에 대한 시각적 인지가 제한되어 벽이나 가구와 같은 주변 환경을 인지하지 못하고 충돌하거나, 주변 사람에게 피해를 주는 안전사고가 발생할 수 있다. National Electronic Injury Surveillance System(NEISS) 데이터를 기반으로 VR 관련 부상 사례를 분석한 연구에 따르면, VR 관련 응급실 방문 추정 건수는 2017년 125건에서 2021년 1,336건으로 증가했으며, 해당 기간 동안 352% 증가한 것으로 나타났다.또한 해당 연구에서는 VR 사용 중 발생하는 주요 부상 원인으로 주변 사물과의 충돌 및 VR 사용자의 움직임으로 인해 VR 컨트롤러 등에 주변 사람이 맞는 Bystander Injury, 즉 주변인에 대한 2차 피해를 제시했다.
+
+기존 VR 기기들은 Passthrough라는 카메라 영상으로 주변 환경을 실시간으로 보여주는 기능을 활용해 물리적 충돌을 방지한다. 대표적으로 Meta Quest의 Guardian은 사용자가 설정한 플레이 영역의 경계에 접근하면 Passthrough 화면을 띄워 위험을 알리는 방식이다. 본 프로젝트는 이 Passthrough 기능을 확장하여, 화면 전체가 아닌 위험이 감지된 영역에만 선택적으로 현실 화면을 노출한다.
+
+그러나 기존 경계 기반 시스템은 다음과 같은 한계를 가진다.
+
+- 사전에 설정된 경계까지의 거리를 중심으로 위험을 판단한다.
+- 사용자의 현재 이동 속도나 움직임 상태를 충분히 반영하지 않는다.
+- 사람과 같이 위치가 변화하는 동적 객체를 직접적인 위험 요소로 판단하기 어렵다.
+- 협소한 공간에서는 불필요한 경고가 반복적으로 발생할 수 있다.
+- 사용자별 행동 특성이나 위험 인지 차이를 반영하기 어렵다.
+- 위험이 발생했을 때 전체 화면을 현실 환경으로 전환하는 방식은 몰입감을 저하시킬 수 있다.
+
+따라서 XR 환경에서는 단순히 고정된 경계를 표시하는 것을 넘어, 사용자의 움직임과 주변 환경을 실시간으로 분석하고 현재 발생하는 위험의 위치와 정도에 따라 적응적으로 대응하는 안전 시스템이 필요하다.
+
+
+## 1.2. 필요성과 기대효과
+
+VR 환경에서 안전을 확보하기 위해 현실 환경을 지속적으로 노출하면 주변 환경에 대한 인지는 향상되는 반면에 가상 환경에 대한 몰입감이 저하될 수 있다. 반대로 현실 환경의 노출을 최소화하면 몰입감은 유지할 수 있지만 실제 장애물이나 주변 사람에 대한 인지가 늦어질 수 있다. 본 프로젝트는 이러한 안전성과 몰입감 사이의 균형 문제를 해결하기 위해 상황 인식 기반 Adaptive Passthrough Framework를 개발한다.
+
+본 시스템은 각 HMD 및 컨트롤러 정보를 실시간으로 분석하고 분석된 위험 정보를 기반으로 위험이 발생한 영역에만 선택적으로 Passthrough를 노출한다. 전체 화면을 현실 환경으로 전환하는 것이 아니라 위험한 방향과 객체 주변만 국소적으로 노출하여 나머지 시야의 몰입을 유지한다.
+
+이를 통해 다음과 같은 효과를 기대한다.
+
+1. VR 사용 중 물리적 충돌 위험에 대한 인지를 향상한다.
+2. 불필요한 Passthrough 노출을 줄여 몰입감 저하를 최소화한다.
+3. 정적 장애물뿐만 아니라 움직이는 사람에 대한 위험에도 대응한다.
+4. 사용자 로그를 기반으로 위험 판단 기준을 점진적으로 개인화한다.
+5. 향후 시각·청각·촉각을 결합한 멀티모달 안전 시스템으로 확장할 수 있는 기반을 마련한다.
 
 ---
 
-## 1. 레파지토리 생성
-- [https://classroom.github.com/a/i3v_IYnd]
-- 위 Github Classroom 링크에 접속해 본인 조의 github 레파지토리를 생성하세요.
+# 2. 개발 목표
 
-<img width="1171" height="592" alt="image" src="https://github.com/user-attachments/assets/22919da2-dee5-4ca8-98f1-3dd63d7a6013" />
+## 2.1. 목표 및 세부 내용
+
+본 프로젝트의 목표는 Meta Quest 3 기반 몰입형 XR 환경에서 사용자의 안전과 몰입감을 동시에 확보하는 상황 인식 기반 Adaptive Passthrough Framework를 개발하는 것이다. 이를 위해 다음과 같은 기능을 개발한다.
+
+### 2.1.1. 정적 경계 위험 분석
+
+벽, 가구, 낮은 장애물과 같은 정적 환경을 인식하고 사용자와 장애물 사이의 위험도를 계산한다.
+
+주요 위험 요소는 다음과 같다.
+
+- 사용자와 장애물 사이의 거리
+- 장애물 방향으로의 접근 속도
+- TTC(Time to Collision)
+- HMD 위치 및 움직임
+- 양손 위치 및 움직임
+- 사용자 이동 상태
+
+정적 위험은 머리, 양손, 낮은 장애물 등의 채널로 구분하여 판단한다. 또한 히스테리시스와 긴급 상황 오버라이드를 적용하여 위험이 임계값 주변에서 반복적으로 발생하거나 해제되는 현상을 줄인다.
+
+### 2.1.2. 동적 객체 위험 분석
+
+Quest 3의 Passthrough 카메라를 이용하여 주변 사람을 검출하고 추적한다.
+
+```text
+Passthrough Camera
+        ↓
+      YOLOv9
+        ↓
+  Person Detection
+        ↓
+ Object Tracking
+        ↓
+Distance / Approach / TTC / Path
+        ↓
+ Dynamic Risk
+```
+
+동적 위험은 사람과의 거리, 접근 속도, TTC, 이동 경로 등을 기반으로 계산한다.
+
+### 2.1.3. 정적·동적 위험의 독립적인 판단
+
+정적 환경과 동적 객체는 입력 데이터의 특성과 반응해야 하는 시간 스케일이 서로 다르기 때문에 각각 독립적으로 위험을 판단한다.
+
+```text
+Static Risk
+     ↓
+Static Passthrough Policy Controller
+     │
+     ├─────────────────────┐
+                           ↓
+              Selective Passthrough Controller
+                           ↑
+     ┌─────────────────────┘
+     │
+Dynamic Passthrough Policy Controller
+     ↑
+Dynamic Risk
+```
+
+통합된 Risk Snapshot은 로그 기록과 개인화 feature 계산에 활용하며, 정적 위험과 동적 위험은 각각의 정책 컨트롤러를 통해 Passthrough 출력에 반영한다.
+
+### 2.1.4. 선택적 Passthrough
+
+위험이 발생한 전체 시야를 현실 환경으로 전환하지 않고 위험 영역에만 Passthrough 창을 생성한다.
+
+- 정적 위험 → 벽·가구 방향의 사각형 Surface Window
+- 동적 위험 → 사람 주변의 상체 Capsule Window
+- 낮은 장애물 → 바닥 안내선
+- 후방 위험 → 방향 진동
+- 보조 경고 → 붉은 테두리 및 컨트롤러 햅틱
+
+이를 통해 안전을 확보하면서도 불필요한 현실 환경 노출을 줄인다.
+
+### 2.1.5. ML 기반 개인화
+
+사용자의 Passthrough 활성화 로그를 이용하여 개인별 위험 판단 민감도를 조정한다.
+
+```text
+Quest Logs
+    ↓
+Session / Event Extraction
+    ↓
+7-Dimensional Features
+    ↓
+Random Forest
+    ↓
+ONNX
+    ↓
+Unity Sentis
+    ↓
+Threshold Adjustment
+```
+
+개인화 모델은 PC에서 학습하고 ONNX 형식으로 변환한 후 Unity Sentis를 이용하여 Quest에서 추론한 후 위험도 계산에 직접 반영된다.
 
 
-- 레포지토리 생성 시 팀명은 `TEAM-{조 번호}` 형식으로 생성하세요.
-- 예를 들어, 2026년도 3조의 팀명은 `TEAM-03` 입니다.
-- 이 경우 `Capstone2026-team-03`이란 이름으로 레파지토리가 생성됩니다.
+## 2.2. 기존 서비스 대비 차별성
+
+본 프로젝트는 기존 기기들이 사용하는 거리뿐만 아니라 사용자의 움직임과 동적 객체까지 고려하여 상황에 따라 위험도를 계산하고 위험 영역에만 선택적으로 Passthrough를 제공한다.
+
+| 구분             | 기존 시스템              | 본 프로젝트                     |
+| -------------- | ------------------- | -------------------------- |
+| 위험 판단 기준       | 사전 설정 경계까지의 거리      | 거리 + 접근 속도 + TTC 기반 연속 위험도 |
+| 대응 대상          | 주로 정적 경계            | 정적 경계 + 동적 객체              |
+| 사용자 상태 반영      | 제한적                 | HMD 및 컨트롤러 움직임 반영          |
+| 동적 위험          | 직접적인 동적 객체 판단 없음    | 사람 검출·추적 및 동적 위험도 계산       |
+| 제어 방식          | 경계 접근에 따른 경고        | 규칙 기반 위험 판단 + ML 기반 개인화    |
+| Passthrough 범위 | 경계 또는 전체적인 현실 환경 노출 | 위험 영역만 국소적으로 노출            |
+| ML 기반 개인화            | 동일한 기준 적용           | 사용자 로그 기반 점진적 개인화          |
+| 사용자 개입         | 경계 설정 필요            | 시스템이 상황을 자동 판단             |
+
+특히 본 프로젝트는 ML이 안전 판단을 직접 대체하는 방식이 아니라 규칙 기반 안전 로직을 기본 안전망으로 유지하면서 ML을 통해 개인별 판단 임계값을 조정하는 구조를 사용한다. 이를 통해 ML 모델의 예측 오류가 발생하더라도 기본적인 안전 규칙이 유지되도록 설계한다.
+
+
+## 2.3. 사회적 가치 도입 계획
+
+본 프로젝트는 VR 사용 중 발생할 수 있는 물리적 충돌과 주변인에 대한 2차 피해 가능성을 고려하여 XR 환경의 물리적 안전성을 향상하는 것을 주요 사회적 가치로 둔다. 특히 VR 사용자의 안전뿐만 아니라 주변 사람과 실제 공간까지 고려하여 위험을 판단한다는 점에서 기존 사용자 중심 안전 시스템의 범위를 확장한다. 또한 불필요한 현실 환경 노출을 줄이는 선택적 Passthrough 방식을 통해 안전성과 몰입감을 동시에 확보하는 것을 목표로 한다.
+
+향후에는 현재의 시각적,진동 기반 피드백을 3D Spatial Audio 및 추가적인 Haptic Feedback으로 확장하여 다양한 감각을 활용한 멀티모달 안전 경고 시스템으로 발전시킬 수 있다.
 
 ---
 
-## 2. 레파지토리 구성
-- 레파지토리 내에 README.md 파일 생성하고 아래의 가이드라인과 작성팁을 참고하여 README.md 파일을 작성하세요. (이 레파지토리의 SAMPLE_README.md 참조)
-- 레파지토리 내에 docs 디렉토리를 생성하고 docs 디렉토리 내에는 과제 수행 하면서 작성한 각종 보고서, 발표자료를 올려둡니다. (이 레파지토리의 docs 디렉토리 참조)
-- 그 밖에 레파지토리의 폴더 구성은 과제 결과물에 따라 자유롭게 구성하되 가급적 코드의 목적이나 기능에 따라 디렉토리를 나누어 구성하세요.
+# 3. 시스템 설계
+
+## 3.1. 시스템 구성도
+
+```text
+┌────────────────────────────────────────────┐
+│                  Meta Quest 3              │
+│                                            │
+│   HMD / Controller / Room Scene / Camera  │
+│                  / Depth                   │
+└──────────────────────┬─────────────────────┘
+                       │
+                       ▼
+┌────────────────────────────────────────────┐
+│            Hardware & Input Layer          │
+│                                            │
+│  Spatial Information / User Movement Data  │
+│       Passthrough Camera / Depth Data      │
+└───────────────┬────────────────┬───────────┘
+                │                │
+                ▼                ▼
+┌────────────────────────┐ ┌────────────────────────┐
+│ Static Risk Pipeline   │ │ Dynamic Risk Pipeline  │
+│                        │ │                        │
+│ Wall / Furniture       │ │ YOLOv9 Person         │
+│ Low Obstacle           │ │ Detection              │
+│ Distance               │ │ Object Tracking        │
+│ Approach Velocity      │ │ Distance / TTC         │
+│ TTC                    │ │ Approach / Path        │
+└────────────┬───────────┘ └───────────┬────────────┘
+             │                         │
+             ▼                         ▼
+┌──────────────────────┐   ┌──────────────────────┐
+│ Static Policy        │   │ Dynamic Policy       │
+│ Controller           │   │ Controller            │
+└────────────┬─────────┘   └────────────┬─────────┘
+             │                          │
+             └────────────┬─────────────┘
+                          ▼
+              ┌────────────────────────┐
+              │ Selective Passthrough  │
+              │ Controller              │
+              │                        │
+              │ Surface Window         │
+              │ Capsule Window         │
+              │ Visual / Haptic Alert  │
+              └────────────┬───────────┘
+                           │
+                           ▼
+                    Meta Quest 3
+```
+
+시스템은 크게 하드웨어 입력 계층, 정적 위험 분석 엔진, 동적 위험 분석 엔진, 정책 제어 계층, 선택적 Passthrough 출력 계층으로 구성된다.
+
+정적 위험과 동적 위험은 각각 독립적으로 분석한 후 정책 컨트롤러를 통해 최종 Passthrough 표현으로 연결된다.
+
+## 3.2. 사용 기술
+
+| 구분                    | 기술                                               |
+| --------------------- | ------------------------------------------------ |
+| HMD                   | Meta Quest 3                                     |
+| Engine                | Unity 6                                          |
+| Unity Version         | 6000.4.2f1                                       |
+| Language              | C# / Python                                      |
+| XR                    | Meta XR SDK                                      |
+| Spatial Understanding | Meta XR / Room Scene / EnvironmentRaycastManager |
+| Computer Vision       | YOLOv9                                           |
+| Object Tracking       | SimpleObjectTracker                              |
+| ML Inference          | Unity Sentis                                     |
+| Machine Learning      | Random Forest                                    |
+| ML Framework          | scikit-learn                                     |
+| Model Format          | ONNX                                             |
+| Testing               | Unity EditMode / pytest                          |
+| Camera                | Quest 3 Passthrough Camera API                   |
 
 ---
 
-## 3. 레파지토리 제출 
+# 4. 개발 결과
 
-- **`[주의]` 레파지토리 제출**은 해당 레파지토리의 ownership을 **학과 계정**으로 넘기는 것이므로 되돌릴 수 없습니다.
-- **레파지토리 제출** 전, 더 이상 수정 사항이 없는지 다시 한번 확인하세요.
-- github 레파지토리에서 Settings > General > Danger zone > Transfer 클릭
-  <img src="https://github.com/user-attachments/assets/cb2361d4-e07e-4b5d-9116-aa80dddd8a8b" alt="소유주 변경 경로" width="500" />
-  
-- [ Specify an organization or username ]에 'PNUCSE'를 입력하고 확인 메세지를 입력하세요.
-  <img src="https://github.com/user-attachments/assets/7c63955d-dcfe-4ac3-bdb6-7d2620575f3a" alt="소유주 변경" width="400" />
+## 4.1. 전체 시스템 흐름도
+
+전체 시스템은 다음 순서로 동작한다.
+
+```text
+[Quest Sensor / Camera]
+          ↓
+[환경 및 사용자 데이터 수집]
+          ↓
+ ┌────────┴─────────┐
+ ↓                  ↓
+[정적 위험 분석]   [동적 위험 분석]
+ ↓                  ↓
+거리/속도/TTC      사람 검출/추적
+ ↓                  ↓
+Static Risk        Dynamic Risk
+ ↓                  ↓
+Static Policy      Dynamic Policy
+ └────────┬─────────┘
+          ↓
+[Selective Passthrough]
+          ↓
+[위험 영역만 현실 환경 노출]
+          ↓
+[시각 / 진동 피드백]
+```
+
+각 위험 분석 경로는 측정 → 위험 추정 → 위험 판단 → 경고 유지 및 해제 → Passthrough 표현의 순서로 처리된다.
+
+## 4.2. 기능 설명 및 주요 기능 명세서
+
+### 4.2.1. 정적 경계 위험 분석
+
+| 항목    | 내용                               |
+| ----- | -------------------------------- |
+| 입력    | Room Scene, 공간 표면, HMD 위치, 양손 위치 |
+| 주요 요소 | 거리, 접근 속도, TTC, 사용자 상태           |
+| 출력    | 정적 위험도 및 위험 영역                   |
+| 대응    | Surface Window, 바닥 안내선, 진동       |
+| 안전장치  | 히스테리시스, 긴급 Passthrough           |
+
+정적 위험도는 사용자와 주변 정적 환경 사이의 거리와 움직임을 기반으로 계산한다.
+
+
+### 4.2.2. 동적 객체 위험 분석
+
+| 항목    | 내용                        |
+| ----- | ------------------------- |
+| 입력    | Passthrough 카메라 영상, 깊이 정보 |
+| 객체    | 사람                        |
+| 검출    | YOLOv9                    |
+| 추적    | SimpleObjectTracker       |
+| 위험 요소 | 근접, 접근, TTC, 경로           |
+| 출력    | 동적 위험도                    |
+| 대응    | 사람 주변 Capsule Window      |
+| 안전장치  | Force Passthrough         |
+
+동적 객체가 사용자에게 접근하는 경우 거리와 접근 속도를 기반으로 위험도를 계산하며, 매우 가까운 상황에서는 안전을 위해 Passthrough를 강제로 노출할 수 있도록 설계한다.
+
+
+### 4.2.3. 선택적 Passthrough
+
+위험 유형에 따라 서로 다른 형태의 Passthrough를 제공한다.
+
+```text
+정적 위험
+    ↓
+벽 / 가구 방향
+    ↓
+Rectangular Surface Window
+
+
+동적 위험
+    ↓
+사람 위치
+    ↓
+Capsule Window
+```
+
+정적 위험 영역에는 사각형 Surface Window를, 동적 사람 영역에는 상체 중심의 Capsule Window를 오버레이한다. 추가적으로 낮은 장애물에 대한 바닥 안내선과 후방 위험에 대한 진동 피드백을 제공한다.
+
+
+### 4.2.4. ML 기반 개인화
+
+사용자의 Passthrough 활성화 기록을 기반으로 개인별 위험 판단 임계값을 조정한다. Feature를 기반으로 Random Forest 모델을 학습하고 ONNX로 변환한 뒤 Unity Sentis에서 추론한다.
+
+개인화 모델은 기본적으로 Shadow Mode를 사용하며, 신규 사용자에게 충분한 로그가 확보되지 않은 경우 기본 임계값을 유지하는 Cold-start 방식을 선택했다. 더불어 사용자의 안전을 위해서 조정 가능한 범위를 ± 10%로 지정한다.
+
+
+### 4.2.5. 사용자 실험
+
+본 프로젝트에서는 총 12명(N=12)을 대상으로 세 가지 조건을 비교하는 사용자 실험을 수행했다. 개인화 모듈은 사용자 로그가 축적되어야 하는 적응형 요소이므로 짧은 세션과 작은 표본으로 구성된 본 비교실험에서는 통제 변인으로 포함하지 않았다.
+
+| 조건      | 설명            |
+| ------- | ------------- |
+| Round 1 | Guardian      |
+| Round 2 | 정적 위험 인식      |
+| Round 3 | 정적 + 동적 위험 인식 |
+
+안전감과 몰입감을 7점 Likert 척도로 측정하고 Friedman 검정 및 사후 Wilcoxon 검정을 수행했다.
+
+### 실험 결과
+
+| 지표  | Round 1 | Round 2 | Round 3 |
+| --- | ------: | ------: | ------: |
+| 안전감 |    4.50 |    5.45 |    5.73 |
+| 몰입감 |    4.51 |    4.32 |    4.03 |
+
+#### 안전감
+
+- Friedman: χ² = 10.59, p = .005
+- Kendall's W = .44
+- Round 1 vs Round 2: p = .005
+- Round 1 vs Round 3: p = .004
+- Round 2 vs Round 3: p = .141
+
+안전감은 라운드 간 유의한 차이를 보였다. 특히 Guardian 조건인 Round 1보다 정적 위험 인식 조건인 Round 2와 정적, 동적 위험 인식 조건인 Round 3에서 안전감이 유의하게 높았다.
+
+#### 몰입감
+
+- Friedman: χ² = 2.13, p = .345
+- Kendall's W = .089
+
+몰입감은 라운드 간 유의한 차이를 보이지 않았다.
+
+따라서 본 실험에서는 Guardian 대비 정적 및 정적+동적 위험 인식 조건에서 안전감이 유의하게 높아졌으며 해당 안전감 향상이 몰입감의 유의한 감소와 함께 나타났다는 근거는 확인되지 않았다.
+
+
+## 4.3. 디렉토리 구조
+
+```text
+.
+├─ docs/                             # 설계 및 구현 스펙, 보고서, 포스터, 발표자료
+│  ├─ 01.보고서/                     # 착수,중간,최종보고서
+│  ├─ 02.포스터/                     # 프로젝트 포스터
+│  ├─ 03.발표자료/                   # 발표 슬라이드
+│  └─ *.md                           # 위험도 분석, 개인화, 시스템 통합 등 세부 스펙 문서
+│
+├─ unity-client/                     # Quest 3용 Unity 6 클라이언트
+│  ├─ Assets/
+│  │  ├─ Scripts/
+│  │  │  ├─ AdaptivePassthrough/     # 정적·동적 위험도 계산 및 정책 컨트롤러 핵심 모듈
+│  │  │  ├─ Experiment/              # 사용자 실험용 사격/회피 게임 로직
+│  │  │  ├─ StaticPassthroughPolicyController.cs   # 정적 위험 기반 Passthrough 제어
+│  │  │  ├─ DynamicPassthroughPolicyController.cs  # 동적 위험 기반 Passthrough 제어
+│  │  │  ├─ SelectivePassthroughController.cs      # 선택적 Passthrough(Surface/Capsule Window) 렌더링
+│  │  │  ├─ PersonalizationRuntimeController.cs    # 온디바이스 개인화 모델 추론 및 임계값 조정
+│  │  │  ├─ SafetyAlertFeedbackController.cs       # 시각,진동 경고 피드백
+│  │  │  └─ QuestRisk*Logger.cs                    # 위험도,세션 로그 기록
+│  │  ├─ Scenes/
+│  │  │  ├─ SampleScene.unity            # 실제 앱 실행 Scene (정적·동적 위험도 + 개인화 + 실험 통합)
+│  │  │  ├─ DynamicRiskMock.unity        # 동적 위험도 Mock 데이터 검증용
+│  │  │  └─ ExperimentGameTest.unity     # 실험 게임 단독 테스트용
+│  │  └─ (Models, Prefabs, Materials, XR, Oculus 등 리소스 폴더)
+│  ├─ Packages/                      # Unity 패키지 매니페스트
+│  ├─ ProjectSettings/               # Unity 프로젝트 설정
+│  └─ Tools/Install-Quest3.cmd(.ps1) # Quest 3 APK 설치 스크립트
+│
+├─ ml-dynamic-object/                 # 동적 객체(사람) 위험도 Python 참조 구현
+│  ├─ src/graduate_risk_mvp/
+│  │  ├─ camera.py                   # 카메라 입력 처리
+│  │  ├─ detector.py                 # YOLOv9 기반 사람 검출
+│  │  ├─ tracker.py                  # 검출된 객체 추적
+│  │  ├─ location.py / motion.py     # 위치,이동 정보 계산
+│  │  ├─ risk.py                     # 거리/접근속도/TTC 기반 위험도 산출
+│  │  └─ pipeline.py                 # 전체 파이프라인 조합
+│  ├─ examples/                      # Mock 데모, USB 카메라 실행 예제
+│  ├─ scripts/export_person_model.py # 검출 모델 변환/내보내기
+│  └─ tests/                         # pytest 단위 테스트
+│
+├─ ml-personalization/                # 개인화 모델 학습·변환 파이프라인
+│  └─ src/
+│     ├─ generate_mock_logs.py       # Mock 로그 생성
+│     ├─ build_features.py           # 세션 로그 → 7차원 feature 추출
+│     ├─ train_model.py              # Random Forest 학습
+│     ├─ hyperparam_tuning.py        # 하이퍼파라미터 튜닝
+│     ├─ convert_to_onnx.py / convert_tree_onnx_for_unity.py  # ONNX 변환(Unity Sentis용)
+│     ├─ cold_start.py               # 콜드스타트(신규 사용자) 처리
+│     ├─ personalize.py              # 개인별 임계값 매핑
+│     └─ parse_risk_snapshot_log.py  # Quest 로그 파싱
+│
+└─ README.md
+```
+
+## 4.4. 산업체 멘토링 의견 및 반영 사항
+
+본 프로젝트에서는 KT 책임연구원 안종길 전문가의 자문을 반영하여 위험도 통합 구조를 변경했다.
+
+기존 설계에서는 다음과 같은 가중합을 통해 전체 위험도를 계산했다.
+
+```text
+Rtotal = wstatic · Rstatic + wstate · Rstate + wdynamic · Rdynamic + wintent · Rintent
+```
+
+그러나 전문가 자문 과정에서 단순 가중평균 방식은 특정 위험 요소가 매우 높더라도 다른 위험 요소의 낮은 값에 의해 최종 위험도가 희석될 수 있다는 문제가 제기되었다. 또한 정적 환경과 동적 객체는 입력 데이터의 특성과 반응해야 하는 시간 스케일이 서로 다르기 때문에 하나의 위험도로 통합하는 것보다 독립적으로 판단하는 것이 적절하다고 판단했다.
+
+이에 따라 최종 시스템에서는 다음과 같이 변경했다.
+
+```text
+Before
+
+Static Risk ─┐
+             ├─▶ Rtotal ─▶ Passthrough
+Dynamic Risk ┘
+
+
+After
+
+Static Risk  ─▶ Static Policy  ─┐
+                                ├─▶ Selective Passthrough
+Dynamic Risk ─▶ Dynamic Policy ─┘
+```
+
+이를 통해 정적 위험과 동적 위험이 서로의 위험도를 희석하지 않고 독립적으로 판단하도록 변경했다.
 
 ---
 
-## 4. README.md 가이드 라인
-- README 파일 작성시에 아래의 5가지 항목의 내용은 필수적으로 포함해야 합니다.
-- 아래의 항목이외에 프로젝트의 이해를 돕기 위한 내용을 추가해도 됩니다.
-- SAMPLE_README.md 이 단순한 형태의 예제이니 참고하세요.
+# 5. 설치 및 실행 방법
 
-```markdown
-### 1. 프로젝트 배경
-#### 1.1. 국내외 시장 현황 및 문제점
-> 시장 조사 및 기존 문제점 서술
+## 5.1. 설치절차 및 실행 방법
 
-#### 1.2. 필요성과 기대효과
-> 왜 이 프로젝트가 필요한지, 기대되는 효과 등
+## 5.2. 오류 발생 시 해결 방법
 
-### 2. 개발 목표
-#### 2.1. 목표 및 세부 내용
-> 전체적인 개발 목표, 주요 기능 및 기획 내용
+---
 
-#### 2.2. 기존 서비스 대비 차별성 
-> 유사 서비스 비교 및 차별점 부각
+# 6. 소개 자료 및 시연 영상
 
-#### 2.3. 사회적 가치 도입 계획 
-> 프로젝트의 공공성, 지속 가능성, 환경 보호 등
-### 3. 시스템 설계
-#### 3.1. 시스템 구성도
-> 이미지 혹은 텍스트로 시스템 아키텍쳐 작성
->
-#### 3.2. 사용 기술
-> 프론트엔드, 백엔드, API 등 구체 기술 스택
+## 6.1. 프로젝트 소개 자료
 
-### 4. 개발 결과
-#### 4.1. 전체 시스템 흐름도
-> 기능 흐름 설명 및 도식화 가능
->
-#### 4.2. 기능 설명 및 주요 기능 명세서
-> 주요 기능에 대한 상세 설명, 각 기능의 입력/출력 및 설명
->
-#### 4.3. 디렉토리 구조
->
-#### 4.4. 산업체 멘토링 의견 및 반영 사항
-> 멘토 피드백과 적용한 사례 정리
+[착수보고서](docs/01.보고서/01. TeamVR_착수보고서.pdf)
+[중간보고서](docs/01.보고서/02. TeamVR_중간보고서.pdf)
+[최종보고서](docs/01.보고서/03. TeamVR_최종보고서.pdf)
+[포스터](docs/02.포스터/TeamVR_포스터.pdf)
+[발표 자료](docs/03.발표자료/TeamVR_발표자료.pdf)
 
-### 5. 설치 및 실행 방법
->
-#### 5.1. 설치절차 및 실행 방법
-> 설치 명령어 및 준비 사항, 실행 명령어, 포트 정보 등
-#### 5.2. 오류 발생 시 해결 방법
-> 선택 사항, 자주 발생하는 오류 및 해결책 등
+## 6.2. 시연 영상
 
-### 6. 소개 자료 및 시연 영상
-#### 6.1. 프로젝트 소개 자료
-> PPT 등
-#### 6.2. 시연 영상
-> 영상 링크 또는 주요 장면 설명
+[![2026 전기 졸업과제 08 TeamVR](https://img.youtube.com/vi/Xw21HWSOwO8/0.jpg)](https://youtu.be/Xw21HWSOwO8)
 
-### 7. 팀 구성
-#### 7.1. 팀원별 소개 및 역할 분담
->
-#### 7.2. 팀원 별 참여 후기
-> 개별적으로 느낀 점, 협업, 기술적 어려움 극복 사례 등
+---
 
-### 8. 참고 문헌 및 출처
+# 7. 팀 구성
 
-```
+## 7.1. 팀원별 소개 및 역할 분담
 
-## 5. README.md 작성팁 
-* 마크다운 언어를 이용해 README.md 파일을 작성할 때 참고할 수 있는 마크다운 언어 문법을 공유합니다.  
-* 다양한 예제와 보다 자세한 문법은 [이 문서](https://www.markdownguide.org/basic-syntax/)를 참고하세요.
+### Team VR
 
-### 5.1. 헤더 Header
-```
-# This is a Header 1
-## This is a Header 2
-### This is a Header 3
-#### This is a Header 4
-##### This is a Header 5
-###### This is a Header 6
-####### This is a Header 7 은 지원되지 않습니다.
-```
-<br />
-
-### 5.2. 인용문 BlockQuote
-```
-> This is a first blockqute.
->	> This is a second blockqute.
->	>	> This is a third blockqute.
-```
-> This is a first blockqute.
->	> This is a second blockqute.
->	>	> This is a third blockqute.
-<br />
-
-### 5.3. 목록 List
-* **Ordered List**
-```
-1. first
-2. second
-3. third  
-```
-1. first
-2. second
-3. third
-<br />
-
-* **Unordered List**
-```
-* 하나
-  * 둘
-
-+ 하나
-  + 둘
-
-- 하나
-  - 둘
-```
-* 하나
-  * 둘
-
-+ 하나
-  + 둘
-
-- 하나
-  - 둘
-<br />
-
-### 5.4. 코드 CodeBlock
-* 코드 블럭 이용 '``'
-```
-여러줄 주석 "```" 이용
-"```
-#include <stdio.h>
-int main(void){
-  printf("Hello world!");
-  return 0;
-}
-```"
-
-단어 주석 "`" 이용
-"`Hello world`"
-
-* 큰 따움표(") 없이 사용하세요.
-``` 
-<br />
-
-### 5.5. 링크 Link
-```
-[Title](link)
-[부산대학교 정보컴퓨터공학부](https://cse.pusan.ac.kr/cse/index..do)
-
-<link>
-<https://cse.pusan.ac.kr/cse/index..do>
-``` 
-[부산대학교 정보컴퓨터공학부](https://cse.pusan.ac.kr/cse/index..do)
-
-<https://cse.pusan.ac.kr/cse/index..do>
-<br />
-
-### 5.6. 강조 Highlighting
-```
-*single asterisks*
-_single underscores_
-**double asterisks**
-__double underscores__
-~~cancelline~~
-```
-*single asterisks* <br />
-_single underscores_ <br />
-**double asterisks** <br />
-__double underscores__ <br />
-~~cancelline~~  <br />
-<br />
-
-### 5.7. 이미지 Image
-```
-<img src="image URL" width="600px" title="Title" alt="Alt text"></img>
-![Alt text](image URL "Optional title")
-```
-- 웹에서 작성한다면 README.md 내용 안으로 이미지를 드래그 앤 드롭하면 이미지가 생성됩니다.
-- 웹이 아닌 로컬에서 작성한다면, github issue에 이미지를 드래그 앤 드롭하여 image url 을 얻을 수 있습니다. (URL만 복사하고 issue는 제출 안 함.)
-  <img src="https://github.com/user-attachments/assets/0fe3bff1-7a2b-4df3-b230-cac4ef5f6d0b" alt="이슈에 image 올림" width="600" />
-  <img src="https://github.com/user-attachments/assets/251c6d42-b36b-4ad4-9cfa-fa2cc67a9a50" alt="image url 복사" width="600" />
+| 팀원          | 역할                       | 주요 담당                                                                                                  |
+| ----------- | ------------------------ | ------------------------------------------------------------------------------------------------------ |
+| **따다소(팀장)** | 개인화 모델 개발 및 사용자 실험 연구 진행 | Random Forest 기반 On-device 로그 수집·추론 파이프라인 구축, PC 기반 개인화 모델 재학습 파이프라인 구현·배포, 사용자 실험 설계·진행 및 비모수 통계 분석, 보고서 작성 및 발표 자료 제작 |
+| **최아영**     | 정적 경계 기반 위험도 알고리즘 및 실험용 게임 개발 | 정적 경계 기반 충돌 위험도 알고리즘 설계·구현, 정적 위험도에 따른 Passthrough 제어 로직 구현, 실험용 VR 게임 개발 및 실험 조건별 위험도 시스템 연동 |
+| **이승주**     | Quest 3 기반 동적 위험 인식 및 안전 시스템 통합 | 카메라·깊이 정보 기반 사람 검출·추적 및 접근 위험도 계산 구현, 위험 위치에 따른 선택적 Passthrough 시각화 및 시각·진동 피드백 구현·안정화, 개인화 모델 및 실험용 VR 게임과 위험도 기반 안전 시스템 통합 |
 
 
-### 5.8. 유튜브 영상 추가
-```markdown
-[![영상 이름](유튜브 영상 썸네일 URL)](유튜브 영상 URL)
-[![부산대학교 정보컴퓨터공학부 소개](http://img.youtube.com/vi/zh_gQ_lmLqE/0.jpg)](https://www.youtube.com/watch?v=zh_gQ_lmLqE)    
-```
-[![부산대학교 정보컴퓨터공학부 소개](http://img.youtube.com/vi/zh_gQ_lmLqE/0.jpg)](https://www.youtube.com/watch?v=zh_gQ_lmLqE)    
+## 7.2. 팀원 별 참여 후기
 
-- 이때 유튜브 영상 썸네일 URL은 유투브 영상 URL로부터 다음과 같이 얻을 수 있습니다.
+### 따다소
 
-- `Youtube URL`: https://www.youtube.com/watch?v={동영상 ID}
-- `Youtube Thumbnail URL`: http://img.youtube.com/vi/{동영상 ID}/0.jpg 
-- 예를 들어, https://www.youtube.com/watch?v=zh_gQ_lmLqE 라고 하면 썸네일의 주소는 http://img.youtube.com/vi/zh_gQ_lmLqE/0.jpg 이다.
+### 따다소
 
+개인화 모델 개발과 사용자 실험을 담당하면서 머릿속에 있던 아이디어를 실제로 동작하는 시스템으로 만드는 과정이 생각보다 훨씬 복잡하다는 것을 몸소 느꼈다. 게다가 팀 하나를 이끄는 데 아직 얼마나 부족한지도 체감했다. 기술적으로는 Random Forest 모델을 학습시키는 것 자체는 어렵지 않았지만 이를 ONNX로 변환하고 Unity Sentis에서 온디바이스로 추론하도록 만드는 과정에서 예상치 못한 문제들을 계속 마주쳤다. 특히 실제 Quest 로그에서는 Negative 표본이 거의 없어서, 처음 설계했던 방식대로 개인화 모델을 검증하기 어려웠던 점이 가장 아쉬웠다. 이 부분은 향후 더 많은 사용자 데이터가 쌓여야 제대로 평가할 수 있을 것 같다. 그리고 처음으로 학술적으로 사용자 실험을 설계하고 직접 진행하면서는 이론과 실제의 차이를 많이 느꼈다. 통계적으로 유의한 결과를 얻는 것도 중요했지만, 실제로 참가자들이 VR 기기를 착용하고 반응하는 모습을 지켜보면서 우리가 만든 시스템이 실제 사용자에게 어떤 의미를 가지는지 체감할 수 있었다. 안전감이 유의하게 향상되면서도 몰입감이 크게 떨어지지 않았다는 결과를 확인했을 때 그동안의 고민과 시행착오가 헛되지 않았다는 생각이 들었다. 6개월 간의 과정 중 배운 모든 것이 앞으로의 실무 경험에 크게 도움될 것 같다는 생각이 들었다. 결론적으로는 한 학기 동안 한 번도 제대로 다뤄 본 적 없는 HMD를 프로젝트의 핵심으로 다루는 과정이 쉽지는 않았지만 그만큼 배운 것도 많았던 프로젝트였다.
+
+### 최아영
+
+TBA
+
+### 이승주
+
+TBA
+
+---
+
+# 8. 참고 문헌 및 출처
+
+## 연구 및 산업 자료
+
+1. 김성진. *확장현실(XR) 산업의 현황과 과제*. KIET 산업경제, 산업연구원, 2023.
+2. *Development and Validation of the Collision Anxiety Questionnaire for VR Applications*. Proceedings of the 2024 CHI Conference on Human Factors in Computing Systems.
+3. Cucher, D. J., Kovacs, M. S., Clark, C. E., & Hu, C. K. P. (2023). *Virtual reality consumer product injuries: An analysis of national emergency department data*. Injury, 54(5), 1396–1399.
+
+## 기술 문서
+
+4. Meta. *Meta Quest에서 패스스루를 사용하는 방법*.
+5. Meta for Developers. *Passthrough Camera API Overview*. Meta Horizon Documentation.
+6. Meta Platforms, Inc. *Create engaging experiences with anchoring improvements and multi-room support*. Meta Horizon Developer Blog, 2024.
+7. Apple Inc. *Important Safety Information for Apple Vision Pro*. 2024.
+
+## 관련 연구
+
+8. Breiman, L. (2001). *Random Forests*. Machine Learning, 45(1), 5–32.
+9. Probst, P., Wright, M. N., & Boulesteix, A.-L. (2019). *Hyperparameters and tuning strategies for random forest*. WIREs Data Mining and Knowledge Discovery, 9(3), e1301.
+10. Tseng, W.-J., Kontrazis, P. D., Lecolinet, E., Huron, S., & Gugenheimer, J. (2024). *Understanding Interaction and Breakouts of Safety Boundaries in Virtual Reality through Mixed-Method Studies*. IEEE VR, 2024.
+11. Schmelter, T., Küchenmeister, P., Geuter, J., & Hildebrand, K. (2025). *Depth-aware immersive visualization of boundaries using particles in VR*. ACM SUI, 2025.
