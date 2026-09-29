@@ -409,7 +409,7 @@ Capsule Window
 │  │  │  ├─ SafetyAlertFeedbackController.cs       # 시각,진동 경고 피드백
 │  │  │  └─ QuestRisk*Logger.cs                    # 위험도,세션 로그 기록
 │  │  ├─ Scenes/
-│  │  │  ├─ SampleScene.unity            # 실제 앱 실행 Scene (정적·동적 위험도 + 개인화 + 실험 통합)
+│  │  │  ├─ SampleScene.unity            # 실제 앱 실행 Scene (정적·동적 Passthrough 선택 및 기능 확인)
 │  │  │  ├─ DynamicRiskMock.unity        # 동적 위험도 Mock 데이터 검증용
 │  │  │  └─ ExperimentGameTest.unity     # 실험 게임 단독 테스트용
 │  │  └─ (Models, Prefabs, Materials, XR, Oculus 등 리소스 폴더)
