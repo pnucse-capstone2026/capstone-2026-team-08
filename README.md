@@ -477,9 +477,133 @@ Dynamic Risk ─▶ Dynamic Policy ─┘
 ---
 
 ## 5. 설치 및 실행 방법
-### 5.1. 설치절차 및 실행 방법
+본 프로젝트는 Unity 기반 클라이언트를 Meta Quest 3에 설치하여 실행한다. Passthrough 기능 확인에는 `SampleScene`, 사용자 실험에는 `ExperimentGameTest`를 사용한다.
+
+#### 5.1.1. 개발 환경
+
+| 구분 | 요구사항 |
+|---|---|
+| 디바이스 | Meta Quest 3 및 컨트롤러 |
+| Unity Editor | 6000.4.2f1 |
+| 빌드 환경 | Android Build Support, Android SDK·NDK, OpenJDK |
+| Meta XR SDK | Core SDK, Interaction SDK, MR Utility Kit 203.0.0 |
+| 온디바이스 추론 | Unity Inference Engine 2.6.1 |
+
+#### 5.1.2. 설치 절차
+
+1. **저장소 복제**
+
+   Git을 이용하여 저장소를 복제한다.
+
+   ```bash
+   git clone https://github.com/everyx2thing/2026-PNU-gradproject-adaptive-passthrough-xr.git
+   ```
+
+2. **Unity 프로젝트 열기**
+
+   Unity Hub에서 `unity-client` 폴더를 프로젝트로 추가하고 Unity `6000.4.2f1`로 연다. 필요한 Unity 패키지는 프로젝트의 `Packages/manifest.json`을 기준으로 설치된다.
+
+3. **Quest 3 연결**
+
+   Quest 3의 개발자 모드를 활성화한 뒤 USB로 PC에 연결하고, 헤드셋에서 USB 디버깅을 허용한다.
+
+4. **실행할 씬 선택**
+
+   사용 목적에 따라 다음 씬을 연다.
+
+   | 씬 경로 | 용도 |
+   |---|---|
+   | `Assets/Scenes/SampleScene.unity` | 정적·동적 Passthrough 기능 확인 |
+   | `Assets/Scenes/ExperimentGameTest.unity` | 사용자 실험용 게임 |
+   | `Assets/Scenes/DynamicRiskMock.unity` | Mock 입력을 이용한 개발용 검증 |
+   
+5. **Android 빌드 및 설치**
+
+   `File > Build Profiles`에서 Android 플랫폼을 활성화한다. 실행할 씬을 빌드 씬 목록에 포함하고 첫 번째 활성 씬으로 배치한 뒤, 연결된 Quest 3를 대상으로 `Build And Run`을 실행한다.
+#### 5.1.3. 실행 및 사용 방법
+
+1. **실행 환경 설정**
+
+   앱 실행 전 Quest 3에서 Space Setup(Room Setup)을 완료한다. 앱 실행 시 공간 데이터 및 카메라 접근 권한을 허용한다.
+
+2. **앱 실행**
+
+   설치된 앱은 Quest 앱 라이브러리의 `알 수 없는 출처(Unknown Sources)`에서 `Adaptive Passthrough`를 선택하여 실행한다.
+
+#### 5.1.4. Sample Scene 사용 방법
+
+Sample Scene은 평면 위에 사용자가 위치하며, 정적·동적 Passthrough 기능을 선택하여 확인하는 씬이다.
+
+사용자 화면 중앙에는 정적 Passthrough와 동적 Passthrough를 각각 활성화하는 버튼 두 개가 있다.
+
+| 정적 Passthrough 버튼 | 동적 Passthrough 버튼 | 적용 방식 |
+|---|---|---|
+| 선택 | 선택 | 정적·동적 Passthrough 모두 활성화 |
+| 선택 | 미선택 | 정적 Passthrough만 활성화 |
+| 미선택 | 선택 | 동적 Passthrough만 활성화 |
+| 미선택 | 미선택 | 기본 Passthrough 적용 |
+
+정적 기능을 선택하면 벽·가구 등 정적 장애물에 대한 반응을 확인할 수 있으며, 동적 기능을 선택하면 주변 사람의 접근에 대한 반응을 확인할 수 있다. 두 기능을 함께 선택하면 정적·동적 위험 영역의 Passthrough를 동시에 확인할 수 있다.
+
+#### 5.1.5. Experiment Scene 사용 방법
+Experiment Scene은 조준·발사·회피 게임을 통해 안전 시스템의 조건별 차이를 비교하는 사용자 실험용 씬이다.
+1. **실험 튜토리얼 진행**
+
+   실험 메뉴에서 튜토리얼을 실행하여 과녁 조준, 발사, 회피 방법을 익힌다. 튜토리얼이 끝나면 라운드 선택 메뉴로 돌아간다.
+
+2. **비교 실험 진행**
+
+   실험 메뉴에서 라운드를 선택하여 조건별 동작을 확인한다.
+
+   | 라운드 | 실험 조건 |
+   |---|---|
+   | Round 1 | 기본 Guardian |
+   | Round 2 | 정적 경계 기반 Passthrough |
+   | Round 3 | 정적 경계 및 동적 객체 기반 Passthrough |
+
+
+
+#### 5.1.6. 세션 로그 확인
+
+실행 중 수집된 로그는 Quest 내부의 다음 경로에 JSONL 형식으로 저장된다.
+
+```text
+Application.persistentDataPath/RiskLogs/
+```
+
+| 파일 패턴 | 주요 내용 |
+|---|---|
+| `dynamic-risk-*.jsonl` | 사람 검출·추적, 거리·접근 상태 및 동적 위험도 |
+| `personalization-*.jsonl` | 개인화 Feature, 모델 추론 결과, 임계값 및 적용 상태 |
+
+로그는 위험도와 시스템 동작 분석에 활용한다. ML 모델 재학습에 사용하려면 현재 로그 형식을 학습 파이프라인의 입력 형식에 맞게 변환해야 한다.
 
 ### 5.2. 오류 발생 시 해결 방법
+
+설치 및 실행 중 문제가 발생하면 다음 항목을 확인한다.
+
+| 증상 | 해결 방법 |
+|---|---|
+| Unity 컴파일 또는 Android 빌드 오류 | Unity `6000.4.2f1`과 Android Build Support, SDK·NDK, OpenJDK 설치 여부를 확인하고 Console 오류를 점검한다. |
+| Quest 3 연결 실패 | 개발자 모드와 USB 디버깅 허용 여부를 확인한다. `offline` 상태이면 USB를 다시 연결한다. |
+| `adb.exe was not found` 표시 | Android SDK의 `platform-tools` 경로를 `PATH`에 추가하거나 설치 스크립트의 `-AdbPath` 옵션으로 경로를 지정한다. |
+| 공간 또는 벽 정보가 수집되지 않음 | Space Setup(Room Setup)과 공간 데이터 접근 권한을 확인한 뒤 앱을 재실행한다. |
+| 사람 검출이 동작하지 않음 | 카메라 접근 권한과 검출 모델 연결 상태를 확인하고, Quest 3 실기기에서 실행한다. |
+| 선택적 Passthrough가 표시되지 않음 | Sample Scene에서는 정적·동적 Passthrough 버튼의 선택 상태를 확인한다. Experiment Scene에서는 메뉴·튜토리얼·Round 1에서 커스텀 출력이 억제되므로, Round 2·3에서 해당 위험 조건에 따라 표시되는지 확인한다. |
+| `Guardian is still suppressed` 표시 | 완전한 Boundaryless 모드를 해제하거나 Roomscale 경계 설정을 완료한 뒤 Round 1을 다시 실행한다. |
+| ML 개인화 모델 오류 | Unity Inference Engine과 `personalization_runtime.onnx`의 임포트 및 컴포넌트 연결 상태를 확인한다. |
+
+상세 오류는 Unity Console에서 확인한다. Quest 실행 로그는 Android SDK의 `platform-tools` 폴더에서 PowerShell을 열어 확인한다.
+
+```powershell
+# 기기 연결 상태 확인
+.\adb.exe devices
+
+# Unity 실행 로그 확인
+.\adb.exe logcat -s Unity
+```
+
+연결 상태가 `unauthorized`이면 헤드셋에서 USB 디버깅을 허용한다. 로그 확인은 `Ctrl + C`로 종료한다.
 
 ---
 
@@ -516,11 +640,17 @@ Dynamic Risk ─▶ Dynamic Policy ─┘
 
 #### 최아영
 
-TBA
+정적 경계 기반 위험도 알고리즘과 Passthrough 제어 로직, 실험용 VR 게임 개발을 담당하면서, 설계한 알고리즘을 실제 사용 환경에서 자연스럽게 동작시키는 일이 생각보다 어려웠다. 같은 거리에서도 사용자의 이동 속도나 손의 움직임에 따라 위험이 달라졌고, 경고가 너무 자주 나타나면 몰입을 방해하기 때문에 어느 정도로 민감하게 반응하도록 할지 고민이 많았다. 이론적으로 설계할 때는 충분하다고 생각했던 부분도 직접 기기를 착용하고 사용해 보면 놓친 점이 보였고, 고려해야 할 상황도 계속 늘어났다. 고개를 돌리는 움직임을 실제 이동과 구분하거나 경고가 반복해서 켜졌다 꺼지는 현상을 줄이는 과정이 특히 그랬다. 실제 기기에서 확인하고 알고리즘을 수정하는 과정을 수십 번 반복하면서, 직접 사용해 보며 개선해 나가는 과정이 왜 필요한지 체감할 수 있었다.
+
+또한 이번 프로젝트를 통해 팀원 간 소통의 중요성을 크게 느꼈다. 각자 맡은 부분이 나뉘어 있어도 결국 하나의 시스템으로 연결되기 때문에, 내 기능이 잘 동작하는 것만으로는 충분하지 않았다. 내가 구현 방식을 바꾸면 다른 팀원의 작업에도 영향을 주었고, 나 역시 팀원의 개발 상황을 알아야 작업을 이어갈 수 있었다. 그래서 개발하는 중에도 진행 상황과 변경 사항, 필요한 데이터를 자주 공유하고 조율해야 한다는 것을 깨달았다. 내가 구현한 내용을 팀원이 이해하고 활용할 수 있도록 설명하는 것 역시 내 역할의 일부였다. 문제가 생겼을 때도 내 담당 부분만 확인하기보다 팀원들과 전체 흐름을 함께 살펴보고 해결 방향을 이야기하는 것이 중요했다. 이번 프로젝트는 단순히 알고리즘과 기능을 구현하는 것을 넘어, 실제 사용하는 사람의 입장에서 생각하고 팀원들과 소통하며 함께 완성해 나가는 태도를 배울 수 있었다.
 
 #### 이승주
 
-TBA
+이번 프로젝트에서는 Quest 3의 카메라와 깊이 정보를 이용한 사람 검출과 추적, 동적 위험도 계산, 선택적 Passthrough 구현과 전체 시스템 통합을 담당했다. 이 과정에서 검출 결과를 실제 사용자가 받아들이는 경고로 연결하기까지 고려해야 할 요소가 많다는 것을 느꼈다.
+
+특히 어려웠던 부분은 실제 기기에서 발생하는 불안정한 입력을 처리하는 것이었다. 일시적인 오검출이나 깊이값의 변화로 위험도가 흔들리고, 손이나 컨트롤러가 장애물로 인식되거나 추론 지연으로 반응이 늦어지는 문제를 다뤘다. 이를 개선하기 위해 여러 프레임의 검출 결과를 이용해 사람 추적을 유지하고, 공간 정보와 깊이 정보를 함께 활용하도록 보완했다. 또한 머리를 움직일 때도 위험 영역과 Passthrough 창의 위치가 맞도록 좌표와 표시 방식을 조정하면서, XR에서는 계산 결과뿐만 아니라 사용자가 실제로 보는 화면의 안정성까지 확인해야 한다는 점을 알 수 있었다.
+
+팀원들이 개발한 정적 위험 분석, 개인화 모델, 실험용 게임을 하나의 실행 환경으로 연결하는 과정도 중요한 경험이었다. 각 기능의 입력과 출력, 실행 조건을 맞추고 통합 후의 동작을 하나씩 점검하는 과정을 통해 기능 구현부터 실제 기기에서의 동작까지 이어지는 개발 과정을 경험했다. 이를 통해 구현한 기능이 실제 사용자에게 어떤 영향을 미치는지 검증하는 과정이 중요하다는 점을 배울 수 있었다.
 
 ---
 
